@@ -1,0 +1,17 @@
+[
+  {
+    "Sourcefile": null,
+    "Include": "",
+    "Includepath": "/opt/arduino-1.8.12/hardware/arduino/avr/cores/arduino"
+  },
+  {
+    "Sourcefile": null,
+    "Include": "",
+    "Includepath": "/opt/arduino-1.8.12/hardware/arduino/avr/variants/standard"
+  },
+  {
+    "Sourcefile": "/home/chatura/work/Arduino/stiffness projector/code/build/sketch/curve.ino.cpp",
+    "Include": "",
+    "Includepath": null
+  }
+]
