@@ -10,7 +10,17 @@
     "Includepath": "/opt/arduino-1.8.12/hardware/arduino/avr/variants/standard"
   },
   {
-    "Sourcefile": "/home/chatura/work/Arduino/stiffness projector/code/build/sketch/curve.ino.cpp",
+    "Sourcefile": "/home/chatura/work/Arduino/stiffness projector/code/build/sketch/constants.cpp.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "/home/chatura/work/Arduino/stiffness projector/code/build/sketch/presure.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "/home/chatura/work/Arduino/stiffness projector/code/build/sketch/water-pump.cpp",
     "Include": "",
     "Includepath": null
   }

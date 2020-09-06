@@ -1,5 +1,5 @@
 {
-  "additionalFiles": "",
+  "additionalFiles": "..,..,..,..,..",
   "builtInLibrariesFolders": "/opt/arduino-1.8.12/libraries",
   "builtInToolsFolders": "/opt/arduino-1.8.12/tools-builder,/opt/arduino-1.8.12/hardware/tools/avr",
   "customBuildProperties": "build.path=/home/chatura/work/Arduino/stiffness projector/code/build,build.warn_data_percentage=75,runtime.tools.avr-gcc.path=/opt/arduino-1.8.12/hardware/tools/avr,runtime.tools.avr-gcc-7.3.0-atmel3.6.1-arduino5.path=/opt/arduino-1.8.12/hardware/tools/avr,runtime.tools.avrdude.path=/opt/arduino-1.8.12/hardware/tools/avr,runtime.tools.avrdude-6.3.0-arduino17.path=/opt/arduino-1.8.12/hardware/tools/avr,runtime.tools.arduinoOTA.path=/opt/arduino-1.8.12/hardware/tools/avr,runtime.tools.arduinoOTA-1.3.0.path=/opt/arduino-1.8.12/hardware/tools/avr",
@@ -7,5 +7,5 @@
   "hardwareFolders": "/opt/arduino-1.8.12/hardware",
   "otherLibrariesFolders": "/home/chatura/Arduino/libraries",
   "runtime.ide.version": "10812",
-  "sketchLocation": "/home/chatura/work/Arduino/stiffness projector/code/src/curve.ino"
+  "sketchLocation": "/home/chatura/work/Arduino/stiffness projector/code/src/constants.cpp"
 }

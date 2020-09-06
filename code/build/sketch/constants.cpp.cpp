@@ -1,5 +1,11 @@
-# 1 "/home/chatura/work/Arduino/stiffness projector/code/src/constants.cpp"
-# 2 "/home/chatura/work/Arduino/stiffness projector/code/src/constants.cpp" 2
+#include <Arduino.h>
+#line 12 "/home/chatura/work/Arduino/stiffness projector/code/src/main.ino"
+void setup();
+#line 23 "/home/chatura/work/Arduino/stiffness projector/code/src/main.ino"
+void loop();
+#line 0 "/home/chatura/work/Arduino/stiffness projector/code/src/main.ino"
+#line 1 "/home/chatura/work/Arduino/stiffness projector/code/src/constants.cpp"
+#include "constants.h"
 const float GlobalConstants ::MAT_A_BOUND_PRESURE = 4.0;
 const float GlobalConstants ::MAT_B_BOUND_PRESURE = 4.0;
 const float GlobalConstants ::MAT_C_BOUND_PRESURE = 4.0;
@@ -8,17 +14,17 @@ const int GlobalConstants ::RELAY_PIN_1 = 13;
 const int GlobalConstants ::RELAY_PIN_2 = 14;
 const int GlobalConstants ::PRESURE_SENSOR_PIN = 1;
 const float GlobalConstants ::OFFSET_PRESURE = 0.483;
-# 1 "/home/chatura/work/Arduino/stiffness projector/code/src/curve.ino"
+#line 1 "/home/chatura/work/Arduino/stiffness projector/code/src/curve.ino"
 //curves
 float mat1[2]={1.0 ,12.0},
 mat2[2]={1.5, 10.0},
  mat3[2]={2.0, 8.0};
-# 1 "/home/chatura/work/Arduino/stiffness projector/code/src/main.ino"
+#line 1 "/home/chatura/work/Arduino/stiffness projector/code/src/main.ino"
 // //sudo chmod a+rw /dev/ttyUSB0
 // #include "projector.h"
-# 4 "/home/chatura/work/Arduino/stiffness projector/code/src/main.ino" 2
-# 5 "/home/chatura/work/Arduino/stiffness projector/code/src/main.ino" 2
-# 6 "/home/chatura/work/Arduino/stiffness projector/code/src/main.ino" 2
+#include "presure.h"
+#include "water-pump.h"
+#include "constants.h"
 
 float targetPresure = GlobalConstants::MAT_A_BOUND_PRESURE;
 void printMessage(String preMessage, float value, String postMessage);
@@ -29,8 +35,8 @@ void setup()
 {
 
     Serial.begin(9600);
-    pinMode(GlobalConstants::RELAY_PIN_1, 0x1);
-    pinMode(GlobalConstants::RELAY_PIN_1, 0x1);
+    pinMode(GlobalConstants::RELAY_PIN_1, OUTPUT);
+    pinMode(GlobalConstants::RELAY_PIN_1, OUTPUT);
 
     waterPump = WaterPump();
     presureSensor = PresureSensor();
@@ -48,13 +54,13 @@ void loop()
         {
             targetPresure = GlobalConstants::MAT_A_BOUND_PRESURE;
             printMessage("clicked", 0, "A");
-            digitalWrite(13, 0x1);
+            digitalWrite(13, HIGH);
         }
         if (val == 'B')
         {
             targetPresure = GlobalConstants::MAT_B_BOUND_PRESURE;
             printMessage("clicked", 0, "B");
-            digitalWrite(13, 0x0);
+            digitalWrite(13, LOW);
         }
         if (val == 'C')
         {
@@ -68,7 +74,7 @@ void loop()
         }
     }
 }
-# 1 "/home/chatura/work/Arduino/stiffness projector/code/src/print-message.ino"
+#line 1 "/home/chatura/work/Arduino/stiffness projector/code/src/print-message.ino"
 void printMessage(String preMessage = "", float value = 0.0, String postMessage = "")
 {
     Serial.println("");
@@ -78,7 +84,7 @@ void printMessage(String preMessage = "", float value = 0.0, String postMessage 
     Serial.print(postMessage);
     Serial.println("");
 }
-# 1 "/home/chatura/work/Arduino/stiffness projector/code/src/relay-test.ino"
+#line 1 "/home/chatura/work/Arduino/stiffness projector/code/src/relay-test.ino"
 // //sudo chmod a+rw /dev/ttyUSB0
 
 // int in1 = 13;
@@ -101,7 +107,7 @@ void printMessage(String preMessage = "", float value = 0.0, String postMessage 
 //     delay(1000);
 //     digitalWrite(in2, LOW);
 // }
-# 1 "/home/chatura/work/Arduino/stiffness projector/code/src/ss.ino"
+#line 1 "/home/chatura/work/Arduino/stiffness projector/code/src/ss.ino"
 // // //sudo chmod a+rw /dev/ttyUSB0
 
 // int enA = 10;
@@ -188,7 +194,7 @@ void printMessage(String preMessage = "", float value = 0.0, String postMessage 
 //   Serial.print(postMessage);
 //   Serial.println("");
 // }
-# 1 "/home/chatura/work/Arduino/stiffness projector/code/src/test.ino"
+#line 1 "/home/chatura/work/Arduino/stiffness projector/code/src/test.ino"
 // //sudo chmod a+rw /dev/ttyUSB0
 
 // int enA = 10;
