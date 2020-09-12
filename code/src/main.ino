@@ -1,13 +1,15 @@
 // //sudo chmod a+rw /dev/ttyUSB0
-// #include "projector.h"
 #include "presure.h"
 #include "water-pump.h"
 #include "constants.h"
+#include "systemEums.h"
+#include "statusPanel.h"
 
-float targetPresure = GlobalConstants::MAT_A_BOUND_PRESURE;
+float targetPresure;
 void printMessage(String preMessage, float value, String postMessage);
 WaterPump waterPump;
 PresureSensor presureSensor;
+StatusPanel statusPanel;
 
 void setup()
 {
@@ -15,40 +17,50 @@ void setup()
     Serial.begin(9600);
     pinMode(GlobalConstants::RELAY_PIN_1, OUTPUT);
     pinMode(GlobalConstants::RELAY_PIN_1, OUTPUT);
+    pinMode(GlobalConstants::LN298_PMW_PIN, OUTPUT);
 
     waterPump = WaterPump();
     presureSensor = PresureSensor();
+    statusPanel = StatusPanel();
+
+    statusPanel.setStatus(SystemEnums::SYSTEM_ON);
 }
 
 void loop()
 {
-
+    statusPanel.setState(SystemEnums::SYSTEM_STATE_IDEAL);
     if (Serial.available())
-    { //id data is available to read
+    {
 
-        char val = Serial.read();
+        // activate redering mode
+        statusPanel.setState(SystemEnums::SYSTEM_STATE_RENDERING);
 
-        if (val == 'A')
+        targetPresure = Serial.parseFloat();
+        printMessage("target presure", targetPresure, "kPa");
+        float normalizedPresure[2];
+        normalizedPresure[0] = targetPresure - GlobalConstants ::NORM_PRESURE;
+        normalizedPresure[1] = targetPresure + GlobalConstants ::NORM_PRESURE;
+        while (presureSensor.getCurrentPresureInPascal() < normalizedPresure[0] || presureSensor.getCurrentPresureInPascal() > normalizedPresure[1])
         {
-            targetPresure = GlobalConstants::MAT_A_BOUND_PRESURE;
-            printMessage("clicked", 0, "A");
-            digitalWrite(13, HIGH);
+            if (presureSensor.getCurrentPresureInPascal() < normalizedPresure[0])
+            {
+                printMessage("presure", presureSensor.getCurrentPresureInPascal(), "kPa");
+                waterPump.leftSpin();
+            }
+            else
+            {
+                printMessage("presure", presureSensor.getCurrentPresureInPascal(), "kPa");
+                waterPump.rightSpin();
+            }
+            if (Serial.available())
+            {
+                waterPump.stopMotor();
+                break;
+            }
         }
-        if (val == 'B')
-        {
-            targetPresure = GlobalConstants::MAT_B_BOUND_PRESURE;
-            printMessage("clicked", 0, "B");
-            digitalWrite(13, LOW);
-        }
-        if (val == 'C')
-        {
-            targetPresure = GlobalConstants::MAT_C_BOUND_PRESURE;
-            printMessage("clicked", 0, "C");
-        }
-        if (val == 'D')
-        {
-            targetPresure = GlobalConstants::MAT_D_BOUND_PRESURE;
-            printMessage("clicked", 0, "D");
-        }
+        // change state to ideal model
+        statusPanel.setState(SystemEnums::SYSTEM_STATE_IDEAL);
+        waterPump.stopMotor();
+        printMessage("redering completed !! presure", presureSensor.getCurrentPresureInPascal(), "kPa");
     }
 }

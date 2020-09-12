@@ -20,6 +20,16 @@
     "Includepath": null
   },
   {
+    "Sourcefile": "/home/chatura/work/Arduino/stiffness projector/code/build/sketch/statusPanel.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
+    "Sourcefile": "/home/chatura/work/Arduino/stiffness projector/code/build/sketch/systemEums.cpp",
+    "Include": "",
+    "Includepath": null
+  },
+  {
     "Sourcefile": "/home/chatura/work/Arduino/stiffness projector/code/build/sketch/water-pump.cpp",
     "Include": "",
     "Includepath": null

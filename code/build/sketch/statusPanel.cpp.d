@@ -1,5 +1,6 @@
-/home/chatura/work/Arduino/stiffness\ projector/code/build/sketch/constants.cpp.cpp.o: \
- /home/chatura/work/Arduino/stiffness\ projector/code/build/sketch/constants.cpp.cpp \
+/home/chatura/work/Arduino/stiffness\ projector/code/build/sketch/statusPanel.cpp.o: \
+ /home/chatura/work/Arduino/stiffness\ projector/code/build/sketch/statusPanel.cpp \
+ /home/chatura/work/Arduino/stiffness\ projector/code/build/sketch/statusPanel.h \
  /opt/arduino-1.8.12/hardware/arduino/avr/cores/arduino/Arduino.h \
  /opt/arduino-1.8.12/hardware/arduino/avr/cores/arduino/binary.h \
  /opt/arduino-1.8.12/hardware/arduino/avr/cores/arduino/WCharacter.h \
@@ -12,7 +13,4 @@
  /opt/arduino-1.8.12/hardware/arduino/avr/cores/arduino/Arduino.h \
  /opt/arduino-1.8.12/hardware/arduino/avr/variants/standard/pins_arduino.h \
  /home/chatura/work/Arduino/stiffness\ projector/code/build/sketch/constants.h \
- /home/chatura/work/Arduino/stiffness\ projector/code/build/sketch/presure.h \
- /home/chatura/work/Arduino/stiffness\ projector/code/build/sketch/water-pump.h \
- /home/chatura/work/Arduino/stiffness\ projector/code/build/sketch/systemEums.h \
- /home/chatura/work/Arduino/stiffness\ projector/code/build/sketch/statusPanel.h
+ /home/chatura/work/Arduino/stiffness\ projector/code/build/sketch/systemEums.h

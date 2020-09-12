@@ -4,6 +4,8 @@ class WaterPump
 {
     int pin1;
     int pin2;
+    int speedPin;
+    int speed;
 
 public:
     WaterPump();
