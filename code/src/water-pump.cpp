@@ -15,6 +15,7 @@ void WaterPump ::leftSpin()
     digitalWrite(pin1, LOW);
     digitalWrite(pin2, HIGH);
     analogWrite(speedPin, speed);
+    Serial.println("motor spining left..");
 }
 
 void WaterPump ::rightSpin()
@@ -23,6 +24,7 @@ void WaterPump ::rightSpin()
     digitalWrite(pin1, HIGH);
     digitalWrite(pin2, LOW);
     analogWrite(speedPin, speed);
+    Serial.println("motor spining right..");
 }
 void WaterPump ::stopMotor()
 {
@@ -31,5 +33,6 @@ void WaterPump ::stopMotor()
         digitalWrite(pin2, LOW);
         digitalWrite(pin1, LOW);
         analogWrite(speedPin, 0);
+        Serial.println("motor stoped..");
     }
 }

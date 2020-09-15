@@ -6,6 +6,7 @@
 #include "statusPanel.h"
 
 float targetPresure;
+float serialRead;
 void printMessage(String preMessage, float value, String postMessage);
 WaterPump waterPump;
 PresureSensor presureSensor;
@@ -32,35 +33,55 @@ void loop()
     if (Serial.available())
     {
 
+        serialRead = Serial.parseFloat();
+        if (serialRead != 0.0)
+        {
+            targetPresure = serialRead;
+            printMessage("target presure", targetPresure, "kPa");
+        }
+    }
+    if (targetPresure != 0.0)
+    {
+        printMessage("system presure", presureSensor.getCurrentPresureInPascal(), "kPa");
+        renderPresure();
+    }
+}
+
+void renderPresure()
+
+{
+
+    float normalizedPresure[2];
+    normalizedPresure[0] = targetPresure - GlobalConstants ::NORM_PRESURE;
+    normalizedPresure[1] = targetPresure + GlobalConstants ::NORM_PRESURE;
+    while (presureSensor.getCurrentPresureInPascal() < normalizedPresure[0] || presureSensor.getCurrentPresureInPascal() > normalizedPresure[1])
+    {
         // activate redering mode
         statusPanel.setState(SystemEnums::SYSTEM_STATE_RENDERING);
+        printMessage("---------------------------------------------------", 0, "");
+        printMessage("Redering started !! [target presure]", targetPresure, "kPa");
 
-        targetPresure = Serial.parseFloat();
-        printMessage("target presure", targetPresure, "kPa");
-        float normalizedPresure[2];
-        normalizedPresure[0] = targetPresure - GlobalConstants ::NORM_PRESURE;
-        normalizedPresure[1] = targetPresure + GlobalConstants ::NORM_PRESURE;
-        while (presureSensor.getCurrentPresureInPascal() < normalizedPresure[0] || presureSensor.getCurrentPresureInPascal() > normalizedPresure[1])
+        if (presureSensor.getCurrentPresureInPascal() < normalizedPresure[0])
         {
-            if (presureSensor.getCurrentPresureInPascal() < normalizedPresure[0])
-            {
-                printMessage("presure", presureSensor.getCurrentPresureInPascal(), "kPa");
-                waterPump.leftSpin();
-            }
-            else
-            {
-                printMessage("presure", presureSensor.getCurrentPresureInPascal(), "kPa");
-                waterPump.rightSpin();
-            }
-            if (Serial.available())
-            {
-                waterPump.stopMotor();
-                break;
-            }
+            printMessage("system presure", presureSensor.getCurrentPresureInPascal(), "kPa");
+            waterPump.leftSpin();
         }
-        // change state to ideal model
-        statusPanel.setState(SystemEnums::SYSTEM_STATE_IDEAL);
-        waterPump.stopMotor();
-        printMessage("redering completed !! presure", presureSensor.getCurrentPresureInPascal(), "kPa");
+        else
+        {
+            printMessage("system presure", presureSensor.getCurrentPresureInPascal(), "kPa");
+            waterPump.rightSpin();
+        }
+        if (Serial.available())
+        {
+            waterPump.stopMotor();
+            break;
+        }
     }
+
+    // change state to ideal model
+    statusPanel.setState(SystemEnums::SYSTEM_STATE_IDEAL);
+    waterPump.stopMotor();
+
+    printMessage("redering completed !! at presure", presureSensor.getCurrentPresureInPascal(), "kPa");
+    printMessage("---------------------------------------------------", 0, "");
 }

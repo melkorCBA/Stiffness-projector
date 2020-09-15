@@ -3,6 +3,8 @@
 void setup();
 #line 30 "/home/chatura/work/Arduino/stiffness projector/code/src/main.ino"
 void loop();
+#line 50 "/home/chatura/work/Arduino/stiffness projector/code/src/main.ino"
+void renderPresure();
 #line 0 "/home/chatura/work/Arduino/stiffness projector/code/src/main.ino"
 #line 1 "/home/chatura/work/Arduino/stiffness projector/code/src/constants.cpp"
 #include "constants.h"
@@ -18,7 +20,7 @@ const int GlobalConstants::LN298_PMW_PIN = 10;
 const int GlobalConstants ::PRESURE_SENSOR_PIN = 1;
 const float GlobalConstants ::OFFSET_PRESURE = 0.483;
 const int GlobalConstants::MOTOR_SPEED = 100;
-const float GlobalConstants::NORM_PRESURE = 1.0;
+const float GlobalConstants::NORM_PRESURE = 5.0;
 const int GlobalConstants::STATE_IDEAL_PIN = 4;
 const int GlobalConstants::STATE_RENDERING_PIN = 5;
 const int GlobalConstants::STATUS_PIN = 6;
@@ -35,67 +37,21 @@ mat2[2]={1.5, 10.0},
 // int in1 = 7;
 // int in2 = 8;
 // // motor two
-// int enB = 5;
-// int in3 = 7;
-// int in4 = 6;
+
 // void setup()
 // {
 //     // set all the motor control pins to outputs
 //     pinMode(enA, OUTPUT);
-//     pinMode(enB, OUTPUT);
+
 //     pinMode(in1, OUTPUT);
 //     pinMode(in2, OUTPUT);
-//     pinMode(in3, OUTPUT);
-//     pinMode(in4, OUTPUT);
 // }
-// void demoOne()
-// {
-//     // this function will run the motors in both directions at a fixed speed
-//     // turn on motor A
-//     digitalWrite(in1, HIGH);
-//     digitalWrite(in2, LOW);
-//     // set speed to 200 out of possible range 0~255
-//     analogWrite(enA, 200);
 
-//     delay(2000);
-//     // now change motor directions
-//     digitalWrite(in1, LOW);
-//     digitalWrite(in2, HIGH);
-
-//     delay(2000);
-//     // now turn off motors
-//     digitalWrite(in1, LOW);
-//     digitalWrite(in2, LOW);
-// }
 // void demoTwo()
 // {
-//     // this function will run the motors across the range of possible speeds
-//     // note that maximum speed is determined by the motor itself and the operating voltage
-//     // the PWM values sent by analogWrite() are fractions of the maximum speed possible
-//     // by your hardware
-//     // turn on motors
+//     digitalWrite(in1, HIGH);
 //     digitalWrite(in1, LOW);
-//     digitalWrite(in2, HIGH);
-
-//     // accelerate from zero to maximum speed
-
-//     for (int i = 150; i < 256; i++)
-//     {
-//         analogWrite(enA, i);
-
-//         delay(500);
-//     }
-//     // decelerate from maximum speed to zero
-//     for (int i = 255; i > 150; --i)
-//     {
-//         analogWrite(enA, i);
-
-//         delay(500);
-//     }
-
-//     // now turn off motors
-//     digitalWrite(in1, LOW);
-//     digitalWrite(in2, LOW);
+//     analogWrite(enA, 200);
 // }
 // void loop()
 // {
@@ -103,7 +59,6 @@ mat2[2]={1.5, 10.0},
 // }
 #line 1 "/home/chatura/work/Arduino/stiffness projector/code/src/main.ino"
 // //sudo chmod a+rw /dev/ttyUSB0
-// #include "projector.h"
 #include "presure.h"
 #include "water-pump.h"
 #include "constants.h"
@@ -111,6 +66,7 @@ mat2[2]={1.5, 10.0},
 #include "statusPanel.h"
 
 float targetPresure;
+float serialRead;
 void printMessage(String preMessage, float value, String postMessage);
 WaterPump waterPump;
 PresureSensor presureSensor;
@@ -137,59 +93,57 @@ void loop()
     if (Serial.available())
     {
 
+        serialRead = Serial.parseFloat();
+        if (serialRead != 0.0)
+        {
+            targetPresure = serialRead;
+            printMessage("target presure", targetPresure, "kPa");
+        }
+    }
+    if (targetPresure != 0.0)
+    {
+        printMessage("system presure", presureSensor.getCurrentPresureInPascal(), "kPa");
+        renderPresure();
+    }
+}
+
+void renderPresure()
+
+{
+
+    float normalizedPresure[2];
+    normalizedPresure[0] = targetPresure - GlobalConstants ::NORM_PRESURE;
+    normalizedPresure[1] = targetPresure + GlobalConstants ::NORM_PRESURE;
+    while (presureSensor.getCurrentPresureInPascal() < normalizedPresure[0] || presureSensor.getCurrentPresureInPascal() > normalizedPresure[1])
+    {
         // activate redering mode
         statusPanel.setState(SystemEnums::SYSTEM_STATE_RENDERING);
+        printMessage("---------------------------------------------------", 0, "");
+        printMessage("Redering started !! [target presure]", targetPresure, "kPa");
 
-        targetPresure = Serial.parseFloat();
-        printMessage("target presure", targetPresure, "kPa");
-        float normalizedPresure[2];
-        normalizedPresure[0] = targetPresure - GlobalConstants ::NORM_PRESURE;
-        normalizedPresure[1] = targetPresure + GlobalConstants ::NORM_PRESURE;
-        while (presureSensor.getCurrentPresureInPascal() < normalizedPresure[0] || presureSensor.getCurrentPresureInPascal() > normalizedPresure[1])
+        if (presureSensor.getCurrentPresureInPascal() < normalizedPresure[0])
         {
-            if (presureSensor.getCurrentPresureInPascal() < normalizedPresure[0])
-            {
-                printMessage("presure", presureSensor.getCurrentPresureInPascal(), "kPa");
-                waterPump.leftSpin();
-            }
-            else
-            {
-                printMessage("presure", presureSensor.getCurrentPresureInPascal(), "kPa");
-                waterPump.rightSpin();
-            }
-            if (Serial.available())
-            {
-                waterPump.stopMotor();
-                break;
-            }
+            printMessage("system presure", presureSensor.getCurrentPresureInPascal(), "kPa");
+            waterPump.leftSpin();
         }
-        statusPanel.setState(SystemEnums::SYSTEM_STATE_RENDERING);
-        waterPump.stopMotor();
-        printMessage("redering completed !! presure", presureSensor.getCurrentPresureInPascal(), "kPa");
-
-        // if (val == 'A')
-        // {
-        //     targetPresure = GlobalConstants::MAT_A_BOUND_PRESURE;
-        //     printMessage("clicked", 0, "A");
-        //     digitalWrite(13, HIGH);
-        // }
-        // if (val == 'B')
-        // {
-        //     targetPresure = GlobalConstants::MAT_B_BOUND_PRESURE;
-        //     printMessage("clicked", 0, "B");
-        //     digitalWrite(13, LOW);
-        // }
-        // if (val == 'C')
-        // {
-        //     targetPresure = GlobalConstants::MAT_C_BOUND_PRESURE;
-        //     printMessage("clicked", 0, "C");
-        // }
-        // if (val == 'D')
-        // {
-        //     targetPresure = GlobalConstants::MAT_D_BOUND_PRESURE;
-        //     printMessage("clicked", 0, "D");
-        // }
+        else
+        {
+            printMessage("system presure", presureSensor.getCurrentPresureInPascal(), "kPa");
+            waterPump.rightSpin();
+        }
+        if (Serial.available())
+        {
+            waterPump.stopMotor();
+            break;
+        }
     }
+
+    // change state to ideal model
+    statusPanel.setState(SystemEnums::SYSTEM_STATE_IDEAL);
+    waterPump.stopMotor();
+
+    printMessage("redering completed !! at presure", presureSensor.getCurrentPresureInPascal(), "kPa");
+    printMessage("---------------------------------------------------", 0, "");
 }
 
 #line 1 "/home/chatura/work/Arduino/stiffness projector/code/src/print-message.ino"
