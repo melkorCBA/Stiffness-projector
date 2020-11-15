@@ -11,7 +11,9 @@ WaterPump ::WaterPump()
 }
 
 void WaterPump ::leftSpin()
+
 {
+
     digitalWrite(pin1, LOW);
     digitalWrite(pin2, HIGH);
     analogWrite(speedPin, speed);

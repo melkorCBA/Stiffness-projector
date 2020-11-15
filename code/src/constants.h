@@ -22,5 +22,6 @@ public:
     static const int STATUS_PIN;
     static const int STATE_IDEAL_PIN;
     static const int STATE_RENDERING_PIN;
+    static const int BAUD_RATE;
 };
 #endif
